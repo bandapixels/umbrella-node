@@ -26,13 +26,13 @@
     "exec": "ts-node -r dotenv/config ./src/index.ts"
   },
   "dependencies": {
-    "@types/faker": "^5.1.0",
     "faker": "^5.1.0",
     "pg": "^8.3.3",
     "reflect-metadata": "^0.1.13",
     "typeorm": "^0.2.26"
   },
   "devDependencies": {
+    "@types/faker": "^5.1.0",
     "@types/node": "^8.0.29",
     "@types/passport": "^1.0.4",
     "@types/pg": "^7.14.4",
