@@ -3,10 +3,14 @@
   "version": "1.0.0",
   "main": "index.js",
   "scripts": {
-    "build": "tsc -p .",
     "start": "ts-node src/index.ts",
+    "docker:pg": "docker-compose up postgres",
+    "docker:touch:pg": "docker exec -it umbrella-postgres psql",
+    "migrate:run": "npm run typeorm migration:run",
+    "migrate:revert": "npm run typeorm migration:revert",
     "typeorm": "ts-node -r tsconfig-paths/register ./node_modules/typeorm/cli.js --config ormconfig.json",
-    "lint:fix": "eslint . --ext .ts --fix"
+    "lint:fix": "eslint . --ext .ts --fix",
+    "build": "tsc -p ."
   },
   "author": "jaxin007",
   "license": "ISC",
@@ -20,10 +24,17 @@
     ],
     "exec": "ts-node -r dotenv/config ./src/index.ts"
   },
-  "dependencies": {},
+  "dependencies": {
+    "@types/faker": "^5.1.0",
+    "faker": "^5.1.0",
+    "pg": "^8.3.3",
+    "reflect-metadata": "^0.1.13",
+    "typeorm": "^0.2.26"
+  },
   "devDependencies": {
     "@types/node": "^8.0.29",
     "@types/passport": "^1.0.4",
+    "@types/pg": "^7.14.4",
     "@types/sequelize": "^4.28.9",
     "@typescript-eslint/eslint-plugin": "^4.0.1",
     "@typescript-eslint/parser": "^4.0.1",
