@@ -22,13 +22,13 @@ export class Users {
   @Column('bigint')
   phone: number;
 
-  @Column({ default: 'null' })
-  status: string;
+  @Column({ default: null })
+  status: 'Seeker' | 'Volunteer' | null;
 
   @Column({ nullable: true, default: false })
   isBusiness?: boolean
 
-  @Column({ nullable: true, default: 0 })
+  @Column({ default: 0 })
   strikes: number
 
   @CreateDateColumn({ type: 'timestamp', nullable: true, default: () => 'CURRENT_TIMESTAMP(6)' })

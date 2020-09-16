@@ -38,8 +38,9 @@ export class users1600176163529 implements MigrationInterface {
         {
           name: 'status',
           type: 'enum',
-          enum: ['null', 'seeker', 'volunteer'],
-          default: 'null',
+          isNullable: true,
+          enum: ['Seeker', 'Volunteer'],
+          default: null,
         },
         {
           name: 'isBusiness',
@@ -50,6 +51,7 @@ export class users1600176163529 implements MigrationInterface {
         {
           name: 'strikes',
           type: 'integer',
+          default: 0,
         },
         {
           name: 'created_at',
