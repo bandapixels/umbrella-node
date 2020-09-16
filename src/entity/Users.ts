@@ -22,10 +22,10 @@ export class Users {
   @Column('bigint')
   phone: number;
 
-  @Column({ default: null })
+  @Column({ type: 'enum', enum: ['Seeker, Volunteer'], nullable: true })
   status: 'Seeker' | 'Volunteer' | null;
 
-  @Column({ nullable: true, default: false })
+  @Column({ default: false })
   isBusiness?: boolean
 
   @Column({ default: 0 })

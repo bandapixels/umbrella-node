@@ -11,6 +11,6 @@ export class Volunteers {
   @Column({ type: 'double', default: 0.0 })
   y_location: number;
 
-  @Column({ type: 'enum', enum: ['Escort', 'Lend'] })
+  @Column({ type: 'enum', enum: ['Escort', 'Lend'], nullable: true })
   type: 'Escort' | 'Lend' | null
 }
