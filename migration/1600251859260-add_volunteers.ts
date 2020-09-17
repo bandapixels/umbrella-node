@@ -1,4 +1,6 @@
-import { MigrationInterface, QueryRunner, Table } from 'typeorm';
+import {
+  MigrationInterface, QueryRunner, Table, TableForeignKey,
+} from 'typeorm';
 
 export class addVolunteers1600251859260 implements MigrationInterface {
   public async up(queryRunner: QueryRunner): Promise<void> {
@@ -7,13 +9,8 @@ export class addVolunteers1600251859260 implements MigrationInterface {
       columns: [
         {
           name: 'user_id',
-          type: 'serial',
-          isPrimary: true,
-        },
-        {
-          name: 'user_id',
-          type: 'serial',
-          isPrimary: true,
+          type: 'integer',
+          isNullable: false,
         },
         {
           name: 'x_location',
@@ -27,10 +24,17 @@ export class addVolunteers1600251859260 implements MigrationInterface {
           name: 'type',
           type: 'enum',
           enum: ['Escort', 'Lend'],
-          default: 'Lend',
+          default: '\'Lend\'',
         },
       ],
     }), true);
+
+    await queryRunner.createForeignKey('volunteers', new TableForeignKey({
+      columnNames: ['user_id'],
+      referencedColumnNames: ['id'],
+      referencedTableName: 'users',
+      onDelete: 'CASCADE',
+    }));
   }
 
   public async down(queryRunner: QueryRunner): Promise<void> {
