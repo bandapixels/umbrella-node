@@ -1,9 +1,13 @@
 import {
+  BeforeInsert,
   Column,
   CreateDateColumn,
   Entity,
   PrimaryGeneratedColumn,
 } from 'typeorm';
+import bcrypt from 'bcrypt';
+
+export type UserStatus = 'Seeker' | 'Volunteer' | null
 
 @Entity()
 export class Users {
@@ -19,11 +23,11 @@ export class Users {
   @Column()
   password: string;
 
-  @Column('bigint')
-  phone: number;
+  @Column('varchar')
+  phone: string;
 
-  @Column({ type: 'enum', enum: ['Seeker, Volunteer'], nullable: true })
-  status: 'Seeker' | 'Volunteer' | null;
+  @Column({ type: 'enum', enum: ['Seeker', 'Volunteer'], nullable: true })
+  status: UserStatus;
 
   @Column({ default: false })
   isBusiness?: boolean
@@ -31,6 +35,12 @@ export class Users {
   @Column({ default: 0 })
   strikes: number
 
-  @CreateDateColumn({ type: 'timestamp', nullable: true, default: () => 'CURRENT_TIMESTAMP(6)' })
+  @CreateDateColumn({ type: 'timestamp', default: () => 'CURRENT_TIMESTAMP(6)' })
   created_at?: string;
+
+  @BeforeInsert()
+  private async setPassword(password: string): Promise<void> {
+    const salt = await bcrypt.genSalt();
+    this.password = await bcrypt.hash(password || this.password, salt);
+  }
 }

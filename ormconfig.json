@@ -5,20 +5,26 @@
    "username": "postgres",
    "password": "secret",
    "database": "postgres",
-   "synchronize": true,
-   "logging": false,
+   "synchronize": false,
+   "logging": true,
+   "seeds": [
+      "./seeds/**/*.ts"
+   ],
+   "factories": [
+     "./src/factories/**/*.ts"
+   ],
    "entities": [
-      "src/entity/**/*.ts"
+      "./src/entity/**/*.ts"
    ],
    "migrations": [
       "migration/**/*.ts"
    ],
    "subscribers": [
-      "src/subscriber/**/*.ts"
+      "./src/subscriber/**/*.ts"
    ],
    "cli": {
-      "entitiesDir": "src/entity",
+      "entitiesDir": "./src/entity",
       "migrationsDir": "migration",
-      "subscribersDir": "src/subscriber"
+      "subscribersDir": "./src/subscriber"
    }
 }
