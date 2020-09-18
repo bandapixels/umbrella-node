@@ -1,14 +1,22 @@
 import { inject, injectable } from 'inversify';
 import {
-  Connection, getConnection, Repository, UpdateResult,
+  Connection, getConnection, UpdateResult,
 } from 'typeorm';
 import { TYPES } from './types';
 import { Volunteers } from '../entity';
-import { VolunteersServiceInterface } from '../interfaces';
+import {
+  SeekersServiceInterface,
+  UsersServiceInterface,
+  VolunteersServiceInterface,
+} from '../interfaces';
 import { Volunteer } from '../models';
 
 @injectable()
 export class VolunteersService implements VolunteersServiceInterface {
+  @inject(TYPES.UsersService) private usersService: UsersServiceInterface;
+
+  @inject(TYPES.SeekersService) private seekersService: SeekersServiceInterface
+
   private volunteersRepository: Connection;
 
   constructor() {

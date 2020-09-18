@@ -1,13 +1,19 @@
 import { inject, injectable } from 'inversify';
 import { Connection, createConnection, UpdateResult } from 'typeorm';
-import { UsersServiceInterface, VolunteersServiceInterface } from '../interfaces';
-import { NewUser, User, Volunteer } from '../models';
-import { Users, UserStatus } from '../entity';
+import {
+  SeekersServiceInterface,
+  UsersServiceInterface,
+  VolunteersServiceInterface,
+} from '../interfaces';
+import { NewUser } from '../models';
+import { Users } from '../entity';
 import { TYPES } from './types';
 
 @injectable()
 export class UsersService implements UsersServiceInterface {
-  @inject(TYPES.VolunteersService) private volunteerService: VolunteersServiceInterface;
+  @inject(TYPES.VolunteersService) private volunteersService: VolunteersServiceInterface;
+
+  @inject(TYPES.SeekersService) private seekersService: SeekersServiceInterface;
 
   private connection: Promise<Connection>;
 
@@ -45,7 +51,7 @@ export class UsersService implements UsersServiceInterface {
   //
   //       switch (status) {
   //       case 'Volunteer':
-  //         await this.volunteerService.createVolunteer(userInfo);
+  //         await this.volunteersService.createVolunteer(userInfo);
   //         break;
   //
   //       case 'Seeker':
