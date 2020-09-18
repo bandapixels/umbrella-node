@@ -1,38 +1,73 @@
 import { inject, injectable } from 'inversify';
-import { Repository } from 'typeorm';
-import { TypeormConnectionService } from './typeormConnection.service';
+import { Connection, createConnection, UpdateResult } from 'typeorm';
+import { UsersServiceInterface, VolunteersServiceInterface } from '../interfaces';
+import { NewUser, User, Volunteer } from '../models';
+import { Users, UserStatus } from '../entity';
 import { TYPES } from './types';
-import { UsersServiceInterface } from '../interfaces';
-import { NewUser, User } from '../models';
-import {
-  Users,
-  UserStatus,
-  Volunteers,
-} from '../entity';
 
 @injectable()
 export class UsersService implements UsersServiceInterface {
-  private userRepository: Repository<Users>;
+  @inject(TYPES.VolunteersService) private volunteerService: VolunteersServiceInterface;
 
-  constructor(@inject(TYPES.TypeormConnectionService) typeormConnection: TypeormConnectionService) {
-    this.userRepository = typeormConnection
-      .getConnection()
-      .getRepository(Users);
+  private connection: Promise<Connection>;
+
+  constructor() {
+    this.connection = createConnection();
   }
 
   async getAllUsers(): Promise<Users[]> {
-    return this.userRepository
-      .manager
-      .find(Users);
+    return this.connection
+      .then((connection: Connection) => connection
+        .manager
+        .find(Users));
   }
 
-  // async setUserStatus(userId: number, status: UserStatus) {
-  //   // ...
+  async registerUser(userData: NewUser): Promise<NewUser> {
+    return this.connection
+      .then((connection: Connection) => connection
+        .manager
+        .save(userData));
+  }
+
+  async getUserById(id: number): Promise<Users> {
+    return this.connection
+      .then((connection: Connection) => connection
+        .manager
+        .findOneOrFail(Users, id));
+  }
+
+  // TODO  complete setUserStatus method
+
+  // async setUserStatus(id: number, status: UserStatus): Promise<UpdateResult> {
+  //   return this.connection
+  //     .then(async (connection: Connection) => {
+  //       const userById = await this.getUserById(id);
+  //
+  //       switch (status) {
+  //       case 'Volunteer':
+  //         await this.volunteerService.createVolunteer(userInfo);
+  //         break;
+  //
+  //       case 'Seeker':
+  //         break;
+  //
+  //       default:
+  //         break;
+  //       }
+  //       return connection.manager
+  //         .update(Users, user_id, { status });
+  //     });
   // }
 
-  async registerUser(userData: NewUser): Promise<NewUser> {
-    return this.userRepository
-      .manager
-      .save(Users, userData);
+  async reportUser(userId: number): Promise<UpdateResult> {
+    return this.connection
+      .then((connection: Connection) => connection
+        .manager
+        .increment(
+          Users,
+          { id: userId },
+          'strikes',
+          1,
+        ));
   }
 }

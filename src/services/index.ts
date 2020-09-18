@@ -1,4 +1,3 @@
 export * from './users.service';
-export * from './volunteer.service';
-export * from './typeormConnection.service';
+export * from './volunteers.service';
 // export * from './seeker.service';

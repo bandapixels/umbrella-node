@@ -9,7 +9,7 @@ import bcrypt from 'bcrypt';
 
 export type UserStatus = 'Seeker' | 'Volunteer' | null
 
-@Entity()
+@Entity('users')
 export class Users {
   @PrimaryGeneratedColumn()
   id: number;

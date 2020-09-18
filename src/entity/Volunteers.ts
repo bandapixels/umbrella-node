@@ -4,7 +4,7 @@ import {
   PrimaryColumn,
 } from 'typeorm';
 
-@Entity()
+@Entity('volunteers')
 export class Volunteers {
   @PrimaryColumn({
     type: 'integer',

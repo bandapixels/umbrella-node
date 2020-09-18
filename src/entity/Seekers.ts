@@ -1,6 +1,6 @@
 import { Entity, Column, PrimaryColumn } from 'typeorm';
 
-@Entity()
+@Entity('seekers')
 export class Seekers {
   @PrimaryColumn({
     type: 'integer',
