@@ -31,15 +31,17 @@ export class users1600176163529 implements MigrationInterface {
         },
         {
           name: 'phone',
-          type: 'bigint',
-          isNullable: false,
+          type: 'varchar',
           isUnique: true,
         },
         {
           name: 'status',
           type: 'enum',
           isNullable: true,
-          enum: ['Seeker', 'Volunteer'],
+          enum: [
+            'Seeker',
+            'Volunteer',
+          ],
           default: null,
         },
         {
@@ -56,6 +58,7 @@ export class users1600176163529 implements MigrationInterface {
         {
           name: 'created_at',
           type: 'timestamp',
+          default: 'CURRENT_TIMESTAMP(6)',
         },
       ],
     }), true);

@@ -1,16 +1,22 @@
-import { Entity, PrimaryGeneratedColumn, Column } from 'typeorm';
+import {
+  Entity,
+  Column,
+  PrimaryColumn,
+} from 'typeorm';
 
-@Entity()
+@Entity('volunteers')
 export class Volunteers {
-  @PrimaryGeneratedColumn()
+  @PrimaryColumn({
+    type: 'integer',
+  })
   user_id: number;
 
-  @Column({ type: 'double', default: 0.0 })
+  @Column({ type: 'numeric', default: 0.0 })
   x_location: number;
 
-  @Column({ type: 'double', default: 0.0 })
+  @Column({ type: 'numeric', default: 0.0 })
   y_location: number;
 
-  @Column({ type: 'enum', enum: ['Escort', 'Lend'], nullable: true })
+  @Column({ type: 'enum', enum: ['Escort', 'Lend', null], nullable: true })
   type: 'Escort' | 'Lend' | null
 }

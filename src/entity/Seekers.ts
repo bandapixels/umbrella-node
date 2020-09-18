@@ -1,13 +1,15 @@
-import { Entity, PrimaryGeneratedColumn, Column } from 'typeorm';
+import { Entity, Column, PrimaryColumn } from 'typeorm';
 
-@Entity()
-export class Volunteer {
-  @PrimaryGeneratedColumn()
+@Entity('seekers')
+export class Seekers {
+  @PrimaryColumn({
+    type: 'integer',
+  })
   user_id: number;
 
-  @Column({ type: 'double', default: 0.0 })
+  @Column({ type: 'numeric', default: 0.0 })
   x_location: number;
 
-  @Column({ type: 'double', default: 0.0 })
+  @Column({ type: 'numeric', default: 0.0 })
   y_location: number;
 }

@@ -14,9 +14,7 @@ module.exports = {
     SharedArrayBuffer: 'readonly',
   },
   parser: '@typescript-eslint/parser',
-  plugins: [
-    '@typescript-eslint',
-  ],
+  plugins: ['@typescript-eslint'],
   rules: {
     indent: ['error', 2],
     'no-unused-vars': 'off',
@@ -28,6 +26,7 @@ module.exports = {
     'import/prefer-default-export': 'off',
     'class-methods-use-this': 'off',
     'no-console': 'off',
+    'max-len': ['error', 140],
     semi: ['error', 'always'],
   },
   settings: {
