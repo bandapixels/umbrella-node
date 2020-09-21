@@ -1,14 +1,14 @@
 import { define } from 'typeorm-seeding';
+import faker from 'faker';
+
 import { Seekers } from '../entity';
 
-// eslint-disable-next-line @typescript-eslint/ban-ts-comment
-// @ts-ignore
-define(Seekers, (faker): Seekers => {
+define(Seekers, (): Seekers => {
   const seeker: Seekers = new Seekers();
 
-  seeker.user_id = 2;
-  seeker.x_location = faker.random.number(100);
-  seeker.y_location = faker.random.number(100);
+  seeker.user_id = faker.random.number({ min: 6, max: 10 });
+  seeker.x_location = +faker.address.latitude();
+  seeker.y_location = +faker.address.longitude();
 
   return seeker;
 });

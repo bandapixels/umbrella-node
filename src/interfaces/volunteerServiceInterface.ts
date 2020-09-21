@@ -7,5 +7,6 @@ export interface VolunteersServiceInterface {
   createVolunteer(newVolunteer: Volunteer): Promise<Volunteers>;
   updateVolunteerLocation(x: number, y: number, id: number): Promise<UpdateResult>;
   updateVolunteer(volunteerId: number, data: Partial<Volunteers>): Promise<UpdateResult>;
-  getVolunteersLocation(): Promise<Volunteers[]>;
+  getAllVolunteersLocation(): Promise<Volunteers[]>;
+  getVolunteerLocation(volunteerId: number): Promise<Volunteers | undefined>;
 }

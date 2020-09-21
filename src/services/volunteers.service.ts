@@ -1,38 +1,31 @@
 import { inject, injectable } from 'inversify';
 import {
-  Connection, getConnection, UpdateResult,
+  getConnection,
+  Repository,
+  UpdateResult,
 } from 'typeorm';
+
 import { TYPES } from './types';
 import { Volunteers } from '../entity';
-import {
-  SeekersServiceInterface,
-  UsersServiceInterface,
-  VolunteersServiceInterface,
-} from '../interfaces';
 import { Volunteer } from '../models';
+import { UsersServiceInterface, VolunteersServiceInterface } from '../interfaces';
 
 @injectable()
 export class VolunteersService implements VolunteersServiceInterface {
   @inject(TYPES.UsersService) private usersService: UsersServiceInterface;
 
-  @inject(TYPES.SeekersService) private seekersService: SeekersServiceInterface
-
-  private volunteersRepository: Connection;
+  private repository: Repository<Volunteers>;
 
   constructor() {
-    this.volunteersRepository = getConnection('volunteers');
+    this.repository = getConnection().getRepository<Volunteers>('volunteers');
   }
 
   async getAllVolunteers(): Promise<Volunteers[]> {
-    return this.volunteersRepository
-      .manager
-      .find(Volunteers);
+    return this.repository.find();
   }
 
   async createVolunteer(volunteerData: Volunteer): Promise<Volunteer> {
-    return this.volunteersRepository
-      .manager
-      .save(volunteerData);
+    return this.repository.save(volunteerData);
   }
 
   async updateVolunteerLocation(
@@ -40,10 +33,8 @@ export class VolunteersService implements VolunteersServiceInterface {
     x_location:number,
     y_location:number,
   ): Promise<UpdateResult> {
-    return this.volunteersRepository
-      .manager
+    return this.repository
       .update(
-        Volunteers,
         id,
         {
           x_location,
@@ -52,16 +43,28 @@ export class VolunteersService implements VolunteersServiceInterface {
       );
   }
 
-  async updateVolunteer(volunteerId: number, data: Partial<Volunteers>): Promise<UpdateResult> {
-    return this.volunteersRepository
-      .manager
-      .update(Volunteers, volunteerId, data);
+  async updateVolunteer(
+    volunteerId: number,
+    data: Partial<Volunteers>,
+  ): Promise<UpdateResult> {
+    return this.repository
+      .update(volunteerId, data);
   }
 
-  async getVolunteersLocation(): Promise<Volunteers[]> {
-    return this.volunteersRepository
-      .createQueryBuilder()
-      .select(['x_location', 'y_location'])
-      .getMany();
+  async getAllVolunteersLocation(): Promise<Volunteers[]> {
+    return this.repository
+      .find(
+        {
+          select: ['x_location', 'y_location'],
+        },
+      );
+  }
+
+  async getVolunteerLocation(volunteerId: number): Promise<Volunteers | undefined> {
+    return this.repository
+      .findOne(
+        volunteerId,
+        { select: ['x_location', 'x_location'] },
+      );
   }
 }

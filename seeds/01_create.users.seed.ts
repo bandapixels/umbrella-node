@@ -4,6 +4,6 @@ import { Users } from '../src/entity/Users';
 
 export default class CreateUsers implements Seeder {
   async run(factory: Factory, connection: Connection): Promise<void> {
-    await factory(Users)().createMany(100);
+    await factory(Users)().createMany(10);
   }
 }

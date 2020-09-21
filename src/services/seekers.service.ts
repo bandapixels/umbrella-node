@@ -1,45 +1,38 @@
 import { inject, injectable } from 'inversify';
 import {
-  Connection,
-  getConnection,
-  UpdateResult,
+  DeleteResult, getConnection, Repository, UpdateResult,
 } from 'typeorm';
+
 import { TYPES } from './types';
 import { Seekers } from '../entity';
 import { Seeker } from '../models';
-import {
-  SeekersServiceInterface,
-  UsersServiceInterface,
-  VolunteersServiceInterface,
-} from '../interfaces';
+import { SeekersServiceInterface, UsersServiceInterface } from '../interfaces';
 
 @injectable()
 export class SeekersService implements SeekersServiceInterface {
   @inject(TYPES.UsersService) private usersService: UsersServiceInterface;
 
-  @inject(TYPES.VolunteersService) private volunteersService: VolunteersServiceInterface;
-
-  private seekersRepository: Connection;
+  private repository: Repository<Seekers>;
 
   constructor() {
-    this.seekersRepository = getConnection('seekers');
+    this.repository = getConnection().getRepository<Seekers>('seekers');
   }
 
   async getAllSeekers(): Promise<Seekers[]> {
-    return this.seekersRepository
-      .manager
-      .find(Seekers);
+    return this.repository.find();
   }
 
-  async createSeeker(newSeeker: Seeker): Promise<Seeker> {
-    return this.seekersRepository
-      .manager
-      .save(Seekers, newSeeker);
+  async createSeeker(seekerData: Seeker): Promise<Seeker> {
+    return this.repository.save(seekerData);
   }
 
   async updateSeeker(seekerId: number, data: Partial<Seekers>): Promise<UpdateResult> {
-    return this.seekersRepository
-      .manager
-      .update(Seekers, seekerId, data);
+    return this.repository
+      .update(seekerId, data);
+  }
+
+  async deleteSeeker(seekerId: number): Promise<DeleteResult> {
+    return this.repository
+      .delete(seekerId);
   }
 }

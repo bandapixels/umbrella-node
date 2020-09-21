@@ -1,79 +1,65 @@
-import { inject, injectable } from 'inversify';
-import { Connection, createConnection, UpdateResult } from 'typeorm';
+import { injectable } from 'inversify';
 import {
-  SeekersServiceInterface,
-  UsersServiceInterface,
-  VolunteersServiceInterface,
-} from '../interfaces';
-import { NewUser } from '../models';
+  DeleteResult,
+  getConnection,
+  Repository,
+  UpdateResult,
+} from 'typeorm';
+
 import { Users } from '../entity';
-import { TYPES } from './types';
+import { UsersServiceInterface } from '../interfaces';
+import { NewUser } from '../models';
 
 @injectable()
 export class UsersService implements UsersServiceInterface {
-  @inject(TYPES.VolunteersService) private volunteersService: VolunteersServiceInterface;
-
-  @inject(TYPES.SeekersService) private seekersService: SeekersServiceInterface;
-
-  private connection: Promise<Connection>;
+  private repository: Repository<Users>;
 
   constructor() {
-    this.connection = createConnection();
+    this.repository = getConnection().getRepository<Users>('users');
   }
 
   async getAllUsers(): Promise<Users[]> {
-    return this.connection
-      .then((connection: Connection) => connection
-        .manager
-        .find(Users));
+    return this.repository.find();
   }
 
   async registerUser(userData: NewUser): Promise<NewUser> {
-    return this.connection
-      .then((connection: Connection) => connection
-        .manager
-        .save(userData));
+    return this.repository.save(userData);
   }
 
   async getUserById(id: number): Promise<Users> {
-    return this.connection
-      .then((connection: Connection) => connection
-        .manager
-        .findOneOrFail(Users, id));
+    return this.repository.findOneOrFail(id);
   }
 
-  // TODO  complete setUserStatus method
+  async setUserStatusVolunteer(userId: number): Promise<UpdateResult> {
+    return this.repository
+      .update(userId, { status: 'Volunteer' });
+  }
 
-  // async setUserStatus(id: number, status: UserStatus): Promise<UpdateResult> {
-  //   return this.connection
-  //     .then(async (connection: Connection) => {
-  //       const userById = await this.getUserById(id);
-  //
-  //       switch (status) {
-  //       case 'Volunteer':
-  //         await this.volunteersService.createVolunteer(userInfo);
-  //         break;
-  //
-  //       case 'Seeker':
-  //         break;
-  //
-  //       default:
-  //         break;
-  //       }
-  //       return connection.manager
-  //         .update(Users, user_id, { status });
-  //     });
-  // }
+  async setUserStatusSeeker(userId: number): Promise<UpdateResult> {
+    return this.repository
+      .update(userId, { status: 'Seeker' });
+  }
 
   async reportUser(userId: number): Promise<UpdateResult> {
-    return this.connection
-      .then((connection: Connection) => connection
-        .manager
-        .increment(
-          Users,
-          { id: userId },
-          'strikes',
-          1,
-        ));
+    return this.repository
+      .decrement(
+        { id: userId },
+        'strikes',
+        1,
+      );
+  }
+
+  async likeUser(userId: number): Promise<UpdateResult> {
+    return this.repository
+      .increment(
+        { id: userId },
+        'strikes',
+        1,
+      );
+  }
+
+  async deleteUser(userId: number): Promise<DeleteResult> {
+    return this.repository
+      .delete(userId);
   }
 }
