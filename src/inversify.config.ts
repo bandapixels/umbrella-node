@@ -1,5 +1,5 @@
-import 'reflect-metadata';
 import { Container } from 'inversify';
+
 import { TYPES } from './services/types';
 import {
   SeekersService,
