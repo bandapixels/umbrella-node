@@ -1,5 +1,6 @@
 import { inject, injectable } from 'inversify';
 import {
+  DeleteResult,
   getConnection,
   Repository,
   UpdateResult,
@@ -7,7 +8,7 @@ import {
 
 import { TYPES } from './types';
 import { Volunteers } from '../entity';
-import { Volunteer } from '../models';
+import { Volunteer, VolunteerLocation } from '../models';
 import { UsersServiceInterface, VolunteersServiceInterface } from '../interfaces';
 
 @injectable()
@@ -21,24 +22,25 @@ export class VolunteersService implements VolunteersServiceInterface {
   }
 
   async getAllVolunteers(): Promise<Volunteers[]> {
-    return this.repository.find();
+    return this.repository
+      .find();
   }
 
   async createVolunteer(volunteerData: Volunteer): Promise<Volunteer> {
-    return this.repository.save(volunteerData);
+    return this.repository
+      .save(volunteerData);
   }
 
   async updateVolunteerLocation(
-    id:number,
-    x_location:number,
-    y_location:number,
+    id: number,
+    location: VolunteerLocation,
   ): Promise<UpdateResult> {
     return this.repository
       .update(
         id,
         {
-          x_location,
-          y_location,
+          x_location: location.x_location,
+          y_location: location.y_location,
         },
       );
   }
@@ -55,7 +57,7 @@ export class VolunteersService implements VolunteersServiceInterface {
     return this.repository
       .find(
         {
-          select: ['x_location', 'y_location'],
+          select: ['user_id', 'x_location', 'y_location'],
         },
       );
   }
@@ -64,7 +66,14 @@ export class VolunteersService implements VolunteersServiceInterface {
     return this.repository
       .findOne(
         volunteerId,
-        { select: ['x_location', 'x_location'] },
+        {
+          select: ['user_id', 'x_location', 'y_location'],
+        },
       );
+  }
+
+  async deleteVolunteer(volunteerId: number): Promise<DeleteResult> {
+    return this.repository
+      .delete(volunteerId);
   }
 }

@@ -19,11 +19,13 @@ export class SeekersService implements SeekersServiceInterface {
   }
 
   async getAllSeekers(): Promise<Seekers[]> {
-    return this.repository.find();
+    return this.repository
+      .find();
   }
 
   async createSeeker(seekerData: Seeker): Promise<Seeker> {
-    return this.repository.save(seekerData);
+    return this.repository
+      .save(seekerData);
   }
 
   async updateSeeker(seekerId: number, data: Partial<Seekers>): Promise<UpdateResult> {

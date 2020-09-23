@@ -1,23 +1,25 @@
 import { inject } from 'inversify';
+import { JsonResult } from 'inversify-express-utils/dts/results';
 import {
   controller,
   httpGet,
   httpPatch,
   httpDelete,
-  requestParam, BaseHttpController, requestBody, response, request,
+  requestParam,
+  BaseHttpController,
+  requestBody,
 } from 'inversify-express-utils';
-import { Request, Response } from 'express';
 
-import { resolve } from 'dns';
-import { JsonResult } from 'inversify-express-utils/dts/results';
+import { Users } from '../entity';
 import { TYPES } from '../services/types';
+import { Seeker, Volunteer } from '../models';
+import { passportAuthMiddleware } from '../config/passport.config';
+
 import {
   SeekersServiceInterface,
   UsersServiceInterface,
   VolunteersServiceInterface,
 } from '../interfaces';
-import { Users } from '../entity';
-import { Volunteer } from '../models';
 
 @controller('/users')
 export class UsersController extends BaseHttpController {
@@ -27,57 +29,67 @@ export class UsersController extends BaseHttpController {
 
   @inject(TYPES.SeekersService) private seekersService: SeekersServiceInterface;
 
-  @httpGet('/users')
-  private async getAllUsers(
-    req: Request,
-    res: Response,
-  ): Promise<Response> {
-    const allUsers: Users[] = await this.usersService.getAllUsers();
+  @httpGet('/users', passportAuthMiddleware)
+  private async getAllUsers(): Promise<JsonResult> {
+    const allUsers: Users[] = await this.usersService
+      .getAllUsers();
 
-    return res.status(200).json(allUsers);
+    return this.json(allUsers);
   }
 
   @httpGet('/user/:id')
   private async getUserById(
     @requestParam('id') id: number,
-      req: Request,
-      res: Response,
-  ): Promise<Response> {
-    const userById = await this.usersService.getUserById(id);
+  ): Promise<JsonResult> {
+    const userById = await this.usersService
+      .getUserById(id);
 
-    return res.status(200).json(userById);
+    return this.json(userById);
   }
 
   @httpPatch('/report/:id')
   private async reportUser(
     @requestParam('id') id: number,
-      req: Request,
-      res: Response,
-  ): Promise<Response> {
-    const reportedUser = await this.usersService.reportUser(id);
+  ): Promise<JsonResult> {
+    const reportedUser = await this.usersService
+      .reportUser(id);
 
-    return res.status(200).json(reportedUser);
+    return this.json(reportedUser);
   }
 
   @httpDelete('/user/:id')
   private async deleteUser(
     @requestParam('id') id: number,
-      req: Request,
-      res: Response,
-  ): Promise<Response> {
-    const deletedUser = await this.usersService.deleteUser(id);
+  ): Promise<JsonResult> {
+    const deletedUser = await this.usersService
+      .deleteUser(id);
 
-    return res.status(200).json(deletedUser);
+    return this.json(deletedUser);
   }
 
-  @httpPatch('/volunteer/:id')
+  @httpPatch('/volunteers')
   private async setStatusToVolunteer(
-    @requestParam('id') id: number,
     @requestBody() volunteerInfo: Volunteer,
   ): Promise<JsonResult> {
-    await this.usersService.setUserStatusVolunteer(id);
-    const newVolunteer = await this.volunteersService.createVolunteer(volunteerInfo);
+    await this.usersService
+      .setUserStatusVolunteer(volunteerInfo.user_id);
+
+    const newVolunteer = await this.volunteersService
+      .createVolunteer(volunteerInfo);
 
     return this.json(newVolunteer);
+  }
+
+  @httpPatch('/seekers')
+  private async setStatusToSeeker(
+    @requestBody() seekerInfo: Seeker,
+  ): Promise<JsonResult> {
+    await this.usersService
+      .setUserStatusSeeker(seekerInfo.user_id);
+
+    const newSeeker = await this.seekersService
+      .createSeeker(seekerInfo);
+
+    return this.json(newSeeker);
   }
 }
