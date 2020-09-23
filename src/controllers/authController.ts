@@ -6,14 +6,16 @@ import {
   controller,
   requestBody,
   httpGet,
-  request, requestHeaders,
+  request,
+  requestHeaders,
 } from 'inversify-express-utils';
 
 import {
   JsonResult,
   BadRequestResult,
   NotFoundResult,
-  CreatedNegotiatedContentResult, BadRequestErrorMessageResult,
+  CreatedNegotiatedContentResult,
+  BadRequestErrorMessageResult,
 } from 'inversify-express-utils/dts/results';
 import { Request } from 'express';
 import { TYPES } from '../services/types';
