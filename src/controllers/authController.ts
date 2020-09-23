@@ -26,6 +26,7 @@ import {
 } from '../interfaces';
 import { Users } from '../entity';
 import { UserLoginRequestInterface } from '../contracts/requests/userLoginRequestInterface';
+import { JwtStatus } from '../constants/jwt';
 
 @controller('/auth')
 export class AuthController extends BaseHttpController {
@@ -58,14 +59,14 @@ export class AuthController extends BaseHttpController {
 
     const accessToken = await this.usersService.generateAccessToken(
       {
-        type: 'ACCESS',
+        type: JwtStatus.access(),
         user_id: authenticatedUser.id,
       },
     );
 
-    const refreshToken = await this.usersService.generateAccessToken(
+    const refreshToken = await this.usersService.generateRefreshToken(
       {
-        type: 'REFRESH',
+        type: JwtStatus.refresh(),
         user_id: authenticatedUser.id,
       },
     );
@@ -77,26 +78,30 @@ export class AuthController extends BaseHttpController {
   private async refreshToken(
     @requestHeaders('Authorization') BearerToken: string,
   ): Promise<JsonResult | BadRequestErrorMessageResult> {
-    const payload = jwt.decode(BearerToken.split(' ')[1]);
+    if (!BearerToken) {
+      return this.badRequest('Refresh token required');
+    }
 
-    if (payload === null || typeof payload === 'string' || !payload.type) {
+    const payload = jwt.decode(BearerToken.split(' ')[1], { json: true });
+
+    if (payload === null || !payload.type) {
       return this.badRequest('Bad auth token');
     }
 
-    if (payload.type !== 'REFRESH') {
+    if (payload.type !== JwtStatus.refresh()) {
       return this.badRequest('Wrong token type');
     }
 
     const accessToken = await this.usersService.generateAccessToken(
       {
-        type: 'ACCESS',
+        type: JwtStatus.access(),
         user_id: payload.id,
       },
     );
 
-    const refreshToken = await this.usersService.generateAccessToken(
+    const refreshToken = await this.usersService.generateRefreshToken(
       {
-        type: 'REFRESH',
+        type: JwtStatus.refresh(),
         user_id: payload.id,
       },
     );

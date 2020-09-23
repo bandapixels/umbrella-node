@@ -1,4 +1,4 @@
-import { envConfig } from './src/config/env.config';
+import { envConfig } from './src/config';
 
 export = {
   type: 'postgres',

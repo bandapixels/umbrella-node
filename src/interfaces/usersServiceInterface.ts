@@ -1,7 +1,7 @@
 import { DeleteResult, UpdateResult } from 'typeorm';
 import { NewUser } from '../models';
 import { Users } from '../entity';
-import { Payload } from '../contracts/requests/tokenInterface';
+import { PayloadInterface } from '../contracts/requests/payloadInterface';
 
 export interface UsersServiceInterface {
   getAllUsers(): Promise<Users[]>;
@@ -13,6 +13,6 @@ export interface UsersServiceInterface {
   likeUser(userId: number): Promise<UpdateResult>;
   deleteUser(userId: number): Promise<DeleteResult>;
   authenticateUser(userEmail: string, userPassword: string): Promise<Users>;
-  generateAccessToken(accessPayload: Payload): Promise<string>;
-  generateRefreshToken(refreshPayload: Payload): Promise<string>;
+  generateAccessToken(accessPayload: PayloadInterface): Promise<string>;
+  generateRefreshToken(refreshPayload: PayloadInterface): Promise<string>;
 }
