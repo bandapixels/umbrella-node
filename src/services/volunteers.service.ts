@@ -57,7 +57,12 @@ export class VolunteersService implements VolunteersServiceInterface {
     return this.repository
       .find(
         {
-          select: ['user_id', 'x_location', 'y_location'],
+          select: [
+            'user_id',
+            'x_location',
+            'y_location',
+            'type',
+          ],
         },
       );
   }

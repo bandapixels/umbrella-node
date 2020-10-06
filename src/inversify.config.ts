@@ -18,4 +18,4 @@ container.bind<UsersServiceInterface>(TYPES.UsersService).to(UsersService);
 container.bind<VolunteersServiceInterface>(TYPES.VolunteersService).to(VolunteersService);
 container.bind<SeekersServiceInterface>(TYPES.SeekersService).to(SeekersService);
 
-export { container };
+export default container;

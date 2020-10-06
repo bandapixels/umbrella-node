@@ -26,7 +26,7 @@ export = {
   ],
   cli: {
     entitiesDir: './src/entity',
-    migrationsDir: 'migration',
+    migrationsDir: './migration',
     subscribersDir: './src/subscriber',
   },
 };

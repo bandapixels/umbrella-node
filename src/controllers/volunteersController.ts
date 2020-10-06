@@ -1,3 +1,4 @@
+import io from 'socket.io-client';
 import { inject } from 'inversify';
 import { JsonResult, NotFoundResult } from 'inversify-express-utils/dts/results';
 import {
@@ -20,13 +21,21 @@ import {
   VolunteersServiceInterface,
 } from '../interfaces';
 
-@controller('/volunteers', passportAuthMiddleware)
+// @controller('/volunteers', passportAuthMiddleware)
+@controller('/volunteers')
 export class VolunteersController extends BaseHttpController {
   @inject(TYPES.UsersService) private usersService: UsersServiceInterface;
 
   @inject(TYPES.VolunteersService) private volunteersService: VolunteersServiceInterface;
 
   @inject(TYPES.SeekersService) private seekersService: SeekersServiceInterface;
+
+  private socket;
+
+  constructor() {
+    super();
+    this.socket = io.connect('http://localhost:3000');
+  }
 
   @httpGet('/location/:id')
   private async getVolunteerLocation(
@@ -47,6 +56,8 @@ export class VolunteersController extends BaseHttpController {
     const volunteersLocation = await this.volunteersService
       .getAllVolunteersLocation();
 
+    this.socket.emit('locations');
+
     return this.json(volunteersLocation);
   }
 
@@ -60,6 +71,8 @@ export class VolunteersController extends BaseHttpController {
         id,
         location,
       );
+
+    this.socket.emit('locations');
 
     return this.json(updatedVolunteerLocation);
   }
