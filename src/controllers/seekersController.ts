@@ -1,3 +1,4 @@
+import io from 'socket.io-client';
 import { inject } from 'inversify';
 import { JsonResult } from 'inversify-express-utils/dts/results';
 import {
@@ -28,12 +29,29 @@ export class SeekersController extends BaseHttpController {
 
   @inject(TYPES.SeekersService) private seekersService: SeekersServiceInterface;
 
+  private socket;
+
+  constructor() {
+    super();
+    this.socket = io.connect('http://localhost:3000');
+  }
+
   @httpGet('/seekers')
   private async getAllSeekers(): Promise<JsonResult> {
     const allSeekers = await this.seekersService
       .getAllSeekers();
 
+    this.socket.emit('locations');
+
     return this.json(allSeekers);
+  }
+
+  @httpGet('/locations')
+  private async getSeekersLocation(): Promise<JsonResult> {
+    const seekersLocation = await this.seekersService
+      .getAllSeekersLocations();
+
+    return this.json(seekersLocation);
   }
 
   @httpPatch('/seeker/:id')
@@ -44,6 +62,8 @@ export class SeekersController extends BaseHttpController {
     const updatedSeeker = await this.seekersService
       .updateSeeker(id, seekerInfo);
 
+    this.socket.emit('locations');
+
     return this.json(updatedSeeker);
   }
 
@@ -53,6 +73,8 @@ export class SeekersController extends BaseHttpController {
   ): Promise<JsonResult> {
     const deletedSeeker = await this.seekersService
       .deleteSeeker(id);
+
+    this.socket.emit('locations');
 
     return this.json(deletedSeeker);
   }

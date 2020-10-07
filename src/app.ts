@@ -3,16 +3,18 @@ import socketIo, { Socket } from 'socket.io';
 import { Application, Request, Response } from 'express';
 
 import container from './inversify.config';
+import umbrellaLiveMap from './umbrellaLiveMap';
 import { appPromise } from './index';
 import { envConfig } from './config';
 import { TYPES } from './services/types';
-import { VolunteersServiceInterface } from './interfaces';
+import { SeekersServiceInterface, VolunteersServiceInterface } from './interfaces';
 
 appPromise.then(async (app: Application) => {
   const volunteerService = container.get<VolunteersServiceInterface>(TYPES.VolunteersService);
+  const seekersService = container.get<SeekersServiceInterface>(TYPES.SeekersService);
 
   app.get('/', (req: Request, res: Response) => {
-    res.sendFile(`${__dirname}/index.html`);
+    res.send(umbrellaLiveMap);
   });
 
   const server = http.createServer(app);
@@ -23,8 +25,10 @@ appPromise.then(async (app: Application) => {
     console.log('connected');
 
     socket.on('locations', async () => {
-      const locations = await volunteerService.getAllVolunteersLocation();
-      io.sockets.emit('locations', locations);
+      const volunteersLocations = await volunteerService.getAllVolunteersLocation();
+      const seekersLocations = await seekersService.getAllSeekers();
+
+      io.sockets.emit('locations', { volunteersLocations, seekersLocations });
     });
 
     socket.on('disconnect', () => {

@@ -33,6 +33,11 @@ export class SeekersService implements SeekersServiceInterface {
       .update(seekerId, data);
   }
 
+  async getAllSeekersLocations(): Promise<Seekers[]> {
+    return this.repository
+      .find({ select: ['x_location', 'y_location', 'user_id'] });
+  }
+
   async deleteSeeker(seekerId: number): Promise<DeleteResult> {
     return this.repository
       .delete(seekerId);

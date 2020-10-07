@@ -5,6 +5,7 @@
   "scripts": {
     "start": "nodemon ./src/app.ts",
     "docker:init": "docker-compose build backend && docker-compose run --rm backend npm run migrate:run && docker-compose up",
+    "docker:ci": "docker-compose up",
     "docker:pg": "docker-compose up postgres",
     "docker:touch:pg": "docker exec -it umbrella-postgres psql",
     "migrate:run": "npm run typeorm migration:run",

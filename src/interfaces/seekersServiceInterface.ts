@@ -6,5 +6,6 @@ export interface SeekersServiceInterface {
   getAllSeekers(): Promise<Seekers[]>;
   createSeeker(newSeeker: Seeker): Promise<Seeker>;
   updateSeeker(seekerId: number, data: Partial<Seekers>): Promise<UpdateResult>;
+  getAllSeekersLocations(): Promise<Seekers[]>;
   deleteSeeker(seekerId: number): Promise<DeleteResult>;
 }
