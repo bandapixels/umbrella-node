@@ -66,11 +66,6 @@ const umbrellaLiveMap = `<!DOCTYPE html>
             },
             map,
           })
-
-          marker.addListener('click', () => infoWindow.open(map, marker))
-
-          map.addListener('click', () => infoWindow.close())
-
           markers.push(marker);
         })
       })
