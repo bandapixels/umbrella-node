@@ -1,5 +1,6 @@
 import jwt from 'jsonwebtoken';
 import { inject } from 'inversify';
+import { Request } from 'express';
 import {
   httpPost,
   BaseHttpController,
@@ -17,18 +18,17 @@ import {
   CreatedNegotiatedContentResult,
   BadRequestErrorMessageResult,
 } from 'inversify-express-utils/dts/results';
-import { Request } from 'express';
 import { TYPES } from '../services/types';
 import { NewUser } from '../models';
 
+import { Users } from '../entity';
+import { JwtStatus } from '../constants/jwt';
+import { UserLoginRequestInterface } from '../contracts/requests/userLoginRequestInterface';
 import {
   SeekersServiceInterface,
   UsersServiceInterface,
   VolunteersServiceInterface,
 } from '../interfaces';
-import { Users } from '../entity';
-import { UserLoginRequestInterface } from '../contracts/requests/userLoginRequestInterface';
-import { JwtStatus } from '../constants/jwt';
 
 @controller('/auth')
 export class AuthController extends BaseHttpController {

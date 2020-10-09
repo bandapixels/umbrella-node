@@ -11,9 +11,11 @@ import {
   requestBody,
 } from 'inversify-express-utils';
 
+import SocketEvents from '../constants/socket.events';
+import { envConfig } from '../config';
 import { TYPES } from '../services/types';
-import { Seeker } from '../models';
 import { passportAuthMiddleware } from '../config/passport.config';
+import { Seeker } from '../models';
 
 import {
   SeekersServiceInterface,
@@ -29,11 +31,11 @@ export class SeekersController extends BaseHttpController {
 
   @inject(TYPES.SeekersService) private seekersService: SeekersServiceInterface;
 
-  private socket;
+  private readonly socket: SocketIOClient.Socket;
 
   constructor() {
     super();
-    this.socket = io.connect('http://localhost:3000');
+    this.socket = io.connect(envConfig.API_URL);
   }
 
   @httpGet('/seekers')
@@ -41,7 +43,7 @@ export class SeekersController extends BaseHttpController {
     const allSeekers = await this.seekersService
       .getAllSeekers();
 
-    this.socket.emit('locations');
+    this.socket.emit(SocketEvents.locations);
 
     return this.json(allSeekers);
   }
@@ -62,7 +64,7 @@ export class SeekersController extends BaseHttpController {
     const updatedSeeker = await this.seekersService
       .updateSeeker(id, seekerInfo);
 
-    this.socket.emit('locations');
+    this.socket.emit(SocketEvents.locations);
 
     return this.json(updatedSeeker);
   }
@@ -74,7 +76,7 @@ export class SeekersController extends BaseHttpController {
     const deletedSeeker = await this.seekersService
       .deleteSeeker(id);
 
-    this.socket.emit('locations');
+    this.socket.emit(SocketEvents.locations);
 
     return this.json(deletedSeeker);
   }

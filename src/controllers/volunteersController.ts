@@ -11,6 +11,8 @@ import {
   requestBody,
 } from 'inversify-express-utils';
 
+import SocketEvents from '../constants/socket.events';
+import { envConfig } from '../config';
 import { passportAuthMiddleware } from '../config/passport.config';
 import { TYPES } from '../services/types';
 import { Volunteer, VolunteerLocation } from '../models';
@@ -21,8 +23,7 @@ import {
   VolunteersServiceInterface,
 } from '../interfaces';
 
-// @controller('/volunteers', passportAuthMiddleware)
-@controller('/volunteers')
+@controller('/volunteers', passportAuthMiddleware)
 export class VolunteersController extends BaseHttpController {
   @inject(TYPES.UsersService) private usersService: UsersServiceInterface;
 
@@ -30,11 +31,11 @@ export class VolunteersController extends BaseHttpController {
 
   @inject(TYPES.SeekersService) private seekersService: SeekersServiceInterface;
 
-  private socket;
+  private readonly socket: SocketIOClient.Socket;
 
   constructor() {
     super();
-    this.socket = io.connect('http://localhost:3000');
+    this.socket = io.connect(envConfig.API_URL);
   }
 
   @httpGet('/location/:id')
@@ -56,7 +57,7 @@ export class VolunteersController extends BaseHttpController {
     const volunteersLocation = await this.volunteersService
       .getAllVolunteersLocation();
 
-    this.socket.emit('locations');
+    this.socket.emit(SocketEvents.locations);
 
     return this.json(volunteersLocation);
   }
@@ -72,7 +73,7 @@ export class VolunteersController extends BaseHttpController {
         location,
       );
 
-    this.socket.emit('locations');
+    this.socket.emit(SocketEvents.locations);
 
     return this.json(updatedVolunteerLocation);
   }

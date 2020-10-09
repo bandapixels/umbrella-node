@@ -9,6 +9,8 @@ export const errConfigFn = (app: express.Application): void => {
 
     const message = status >= 500 ? 'INTERNAL_SERVER_ERROR' : err.message;
 
+    console.error(err);
+
     return res.json({
       message,
     });

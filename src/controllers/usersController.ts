@@ -12,8 +12,8 @@ import {
 
 import { Users } from '../entity';
 import { TYPES } from '../services/types';
-import { Seeker, Volunteer } from '../models';
 import { passportAuthMiddleware } from '../config/passport.config';
+import { Seeker, Volunteer } from '../models';
 
 import {
   SeekersServiceInterface,
@@ -21,7 +21,7 @@ import {
   VolunteersServiceInterface,
 } from '../interfaces';
 
-@controller('/users')
+@controller('/users', passportAuthMiddleware)
 export class UsersController extends BaseHttpController {
   @inject(TYPES.UsersService) private usersService: UsersServiceInterface;
 
@@ -29,7 +29,7 @@ export class UsersController extends BaseHttpController {
 
   @inject(TYPES.SeekersService) private seekersService: SeekersServiceInterface;
 
-  @httpGet('/users', passportAuthMiddleware)
+  @httpGet('/users')
   private async getAllUsers(): Promise<JsonResult> {
     const allUsers: Users[] = await this.usersService
       .getAllUsers();
