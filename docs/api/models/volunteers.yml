@@ -1,0 +1,18 @@
+components:
+  schemas:
+    Volunteers:
+      type: array
+      items:
+        properties:
+          user_id:
+            type: number
+            example: 1
+          x_location:
+            type: number
+            example: 30
+          y_location:
+            type: number
+            example: 150
+          type:
+            type: string
+            enum: [ 'Escort', 'Lend' ]

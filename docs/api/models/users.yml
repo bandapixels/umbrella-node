@@ -1,0 +1,33 @@
+components:
+  schemas:
+    Users:
+      type: array
+      items:
+        properties:
+          user_id:
+            type: number
+            example: 1
+          name:
+            type: string
+            example: 'myName'
+          email:
+            type: string
+            example: 'example@example.com'
+          password:
+            type: string
+            example: 'secret password'
+          phone:
+            type: string
+            example: '3-333-333-333'
+          status:
+            type: string
+            enum: [ Seeker, Volunteer ]
+          isBusiness:
+            type: boolean
+            example: true
+          strikes:
+            type: number
+            example: 0
+          created_at:
+            type: string
+            example: '2020-10-06T08:29:41.802Z'

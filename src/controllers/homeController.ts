@@ -7,6 +7,7 @@ import {
 import { Request, Response } from 'express';
 
 import { TYPES } from '../services/types';
+import { envConfig } from '../config';
 
 import {
   SeekersServiceInterface,
@@ -24,6 +25,6 @@ export class HomeController extends BaseHttpController {
 
   @httpGet('/')
   private async getHome(req: Request, res: Response): Promise<void> {
-    return res.render('index');
+    return res.render('index', { API_URL: envConfig.API_URL });
   }
 }

@@ -8,7 +8,7 @@ import {
 
 import { TYPES } from './types';
 import { Volunteers } from '../entity';
-import { Volunteer, VolunteerLocation } from '../models';
+import { Volunteer } from '../models';
 import { UsersServiceInterface, VolunteersServiceInterface } from '../interfaces';
 
 @injectable()
@@ -29,20 +29,6 @@ export class VolunteersService implements VolunteersServiceInterface {
   async createVolunteer(volunteerData: Volunteer): Promise<Volunteer> {
     return this.repository
       .save(volunteerData);
-  }
-
-  async updateVolunteerLocation(
-    id: number,
-    location: VolunteerLocation,
-  ): Promise<UpdateResult> {
-    return this.repository
-      .update(
-        id,
-        {
-          x_location: location.x_location,
-          y_location: location.y_location,
-        },
-      );
   }
 
   async updateVolunteer(

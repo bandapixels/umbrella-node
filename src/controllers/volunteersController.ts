@@ -15,7 +15,7 @@ import SocketEvents from '../constants/socket.events';
 import { envConfig } from '../config';
 import { passportAuthMiddleware } from '../config/passport.config';
 import { TYPES } from '../services/types';
-import { Volunteer, VolunteerLocation } from '../models';
+import { Volunteer } from '../models';
 
 import {
   SeekersServiceInterface,
@@ -62,22 +62,6 @@ export class VolunteersController extends BaseHttpController {
     return this.json(volunteersLocation);
   }
 
-  @httpPatch('/location/:id')
-  private async updateVolunteerLocation(
-    @requestParam('id') id: number,
-    @requestBody() location: VolunteerLocation,
-  ): Promise<JsonResult> {
-    const updatedVolunteerLocation = await this.volunteersService
-      .updateVolunteerLocation(
-        id,
-        location,
-      );
-
-    this.socket.emit(SocketEvents.locations);
-
-    return this.json(updatedVolunteerLocation);
-  }
-
   @httpPatch('/volunteer/:id')
   private async updateVolunteer(
     @requestParam('id') id: number,
@@ -87,20 +71,6 @@ export class VolunteersController extends BaseHttpController {
       .updateVolunteer(id, volunteerInfo);
 
     return this.json(updatedVolunteer);
-  }
-
-  @httpPatch('/status/:id')
-  private async updateVolunteerStatus(
-    @requestParam('id') id: number,
-    @requestBody() type: 'Escort' | 'Lend' | null,
-  ): Promise<JsonResult> {
-    const updatedVolunteerStatus = await this.volunteersService
-      .updateVolunteer(
-        id,
-        { type },
-      );
-
-    return this.json(updatedVolunteerStatus);
   }
 
   @httpDelete('/volunteer/:id')

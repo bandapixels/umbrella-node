@@ -1,0 +1,15 @@
+components:
+  schemas:
+    Seekers:
+      type: array
+      items:
+        properties:
+          user_id:
+            type: number
+            example: 1
+          x_location:
+            type: number
+            example: 35.5
+          y_location:
+            type: number
+            example: 150

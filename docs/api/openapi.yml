@@ -1,0 +1,380 @@
+openapi: 3.0.3
+
+info:
+  version: v1.0
+  title: Umbrella service
+
+  x-logo:
+    url: 'https://www.flaticon.com/svg/static/icons/svg/1147/1147591.svg'
+    altText: 'Umbrella service logo'
+servers:
+  - url: 'http://localhost:3000/'
+security:
+  - bearerAuth: []
+
+paths:
+  /auth/register:
+    post:
+      security: []
+      summary: 'Should register the new user'
+      requestBody:
+        $ref: '#/components/requestBodies/NewUser'
+      responses:
+        201:
+          $ref: '#/components/responses/JwtTokens'
+        500:
+          $ref: '#/components/responses/InternalServerError'
+
+  /auth/login:
+    post:
+      security: []
+      summary: 'Should login the user'
+      requestBody:
+        content:
+          application/json:
+            schema:
+              properties:
+                email:
+                  type: string
+                  required: true
+                  example: 'example@example.com'
+                password:
+                  type: string
+                  required: true
+                  example: 'password'
+      responses:
+        200:
+          $ref: '#/components/responses/JwtTokens'
+        500:
+          $ref: '#/components/responses/InternalServerError'
+
+  /auth/refresh:
+    get:
+      summary: 'Should refresh the jwt token'
+      responses:
+        200:
+          $ref: '#/components/responses/JwtTokens'
+        400:
+          description: 'Wrong refresh token'
+          content:
+            application/json:
+              schema:
+                properties:
+                  msg:
+                    type: string
+                    example: 'Wrong token type'
+
+  /seekers/seekers:
+    get:
+      summary: 'Should return the list of all seekers'
+      responses:
+        200:
+          description: 'Return list of all seekers'
+          content:
+            application/json:
+              schema:
+                $ref: './models/seekers.yml#/components/schemas/Seekers'
+        401:
+          $ref: '#/components/responses/UnauthorizedError'
+        500:
+          $ref: '#/components/responses/InternalServerError'
+
+  /seekers/locations:
+    get:
+      summary: 'Should return the locations of all seekers'
+      responses:
+        200:
+          description: 'Locations of all seekers'
+          content:
+            application/json:
+              schema:
+                $ref: './models/seekers.yml#/components/schemas/Seekers'
+        401:
+          $ref: '#/components/responses/UnauthorizedError'
+
+  /seekers/seeker/{id}:
+    patch:
+      summary: 'Should update the seeker'
+      parameters:
+        - $ref: '#/components/parameters/seekerId'
+      requestBody:
+        $ref: '#/components/requestBodies/Locations'
+      responses:
+        200:
+          description: 'Successfully updated the seeker'
+          content:
+            application/json:
+              schema:
+                $ref: './models/seekers.yml#/components/schemas/Seekers'
+        401:
+          $ref: '#/components/responses/UnauthorizedError'
+        500:
+          $ref: '#/components/responses/InternalServerError'
+    delete:
+      summary: 'Should delete the seeker'
+      parameters:
+        - $ref: '#/components/parameters/seekerId'
+      responses:
+        200:
+          description: 'Successfully deleted the seeker'
+          content:
+            application/json:
+              schema:
+                properties:
+                  msg:
+                    type: string
+                    example: 'Deleted'
+        401:
+          $ref: '#/components/responses/UnauthorizedError'
+        500:
+          $ref: '#/components/responses/InternalServerError'
+
+  /volunteers/location/{id}:
+    get:
+      summary: 'Should return the locations of all volunteers'
+      parameters:
+        - $ref: '#/components/parameters/volunteerId'
+      responses:
+        200:
+          description: 'Return the locations of all volunteers'
+          content:
+            application/json:
+              schema:
+                $ref: './models/volunteers.yml#/components/schemas/Volunteers'
+        401:
+          $ref: '#/components/responses/UnauthorizedError'
+        500:
+          $ref: '#/components/responses/InternalServerError'
+
+  /volunteers/locations:
+    get:
+      summary: 'Should return the locations of all volunteers'
+      responses:
+        200:
+          description: 'Return the locations of all seekers'
+          content:
+            application/json:
+              schema:
+                $ref: './models/volunteers.yml#/components/schemas/Volunteers'
+        401:
+          $ref: '#/components/responses/UnauthorizedError'
+        500:
+          $ref: '#/components/responses/InternalServerError'
+
+  /volunteers/volunteer/{id}:
+    patch:
+      summary: 'Should update the volunteer data'
+      parameters:
+        - $ref: '#/components/parameters/volunteerId'
+      responses:
+        200:
+          description: 'Successfully update the volunteer data'
+          content:
+            application/json:
+              schema:
+                $ref: './models/volunteers.yml#/components/schemas/Volunteers'
+        401:
+          $ref: '#/components/responses/UnauthorizedError'
+        500:
+          $ref: '#/components/responses/InternalServerError'
+    delete:
+      summary: 'Should delete the volunteer'
+      parameters:
+        - $ref: '#/components/parameters/volunteerId'
+      responses:
+        200:
+          description: 'Successfully deleted the volunteer'
+          content:
+            application/json:
+              schema:
+                $ref: './models/volunteers.yml#/components/schemas/Volunteers'
+        401:
+          $ref: '#/components/responses/UnauthorizedError'
+        500:
+          $ref: '#/components/responses/InternalServerError'
+
+  /users/users:
+    get:
+      summary: 'Should get the list of all users'
+      responses:
+        200:
+          description: 'Return the list of all users'
+          content:
+            application/json:
+              schema:
+                $ref: './models/users.yml#/components/schemas/Users'
+        401:
+          $ref: '#/components/responses/UnauthorizedError'
+        500:
+          $ref: '#/components/responses/InternalServerError'
+
+
+  /users/user/{id}:
+    delete:
+      summary: 'Should delete user'
+      responses:
+        200:
+          description: 'Deleted user'
+          content:
+            application/json:
+              schema:
+                $ref: './models/users.yml#/components/schemas/Users'
+        401:
+          $ref: '#/components/responses/UnauthorizedError'
+        500:
+          $ref: '#/components/responses/InternalServerError'
+
+  /users/report/{id}:
+    patch:
+      summary: 'Should increment the count of user reports'
+      parameters:
+        - $ref: '#/components/parameters/userId'
+      responses:
+        200:
+          description: 'Incremented the count of user reports'
+          content:
+            application/json:
+             schema:
+               $ref: './models/users.yml#/components/schemas/Users'
+        401:
+          $ref: '#/components/responses/UnauthorizedError'
+        500:
+          $ref: '#/components/responses/InternalServerError'
+
+  /users/volunteers:
+    patch:
+      summary: 'Should change the user status to Volunteer'
+      parameters:
+        - $ref: '#/components/parameters/userId'
+      responses:
+        200:
+          description: 'Changed user status to Volunteer'
+          content:
+            application/json:
+              schema:
+                $ref: './models/users.yml#/components/schemas/Users'
+        401:
+          $ref: '#/components/responses/UnauthorizedError'
+        500:
+          $ref: '#/components/responses/InternalServerError'
+
+  /users/seekers:
+    patch:
+      summary: 'Should change the user status to Seeker'
+      parameters:
+        - $ref: '#/components/parameters/userId'
+      responses:
+        200:
+          description: 'Changed user status to Seeker'
+          content:
+            application/json:
+              schema:
+                $ref: './models/users.yml#/components/schemas/Users'
+        401:
+          $ref: '#/components/responses/UnauthorizedError'
+        500:
+          $ref: '#/components/responses/InternalServerError'
+
+components:
+  responses:
+    UnauthorizedError:
+      description: 'Unauthorized'
+      content:
+        application/json:
+          schema:
+            type: object
+            properties:
+              errMessage:
+                type: string
+                example: 'Unauthorized'
+    JwtTokens:
+      description: 'Return access and refresh tokens'
+      content:
+        application/json:
+          schema:
+            type: object
+            properties:
+              accessToken:
+                type: string
+                example: '<Access token>'
+              refreshToken:
+                type: string
+                example: '<Refresh token>'
+    InternalServerError:
+      description: 'INTERNAL_SERVER_ERROR'
+      content:
+        application/json:
+          schema:
+            type: object
+            properties:
+              errMessage:
+                type: string
+                example: 'INTERNAL_SERVER_ERROR'
+  parameters:
+    userId:
+      name: 'id'
+      in: path
+      required: true
+      schema:
+        type: integer
+      description: 'user id'
+    volunteerId:
+      name: 'id'
+      in: path
+      required: true
+      schema:
+        type: integer
+      description: 'volunteer id'
+    seekerId:
+      name: 'id'
+      in: path
+      required: true
+      schema:
+        type: integer
+      description: 'seeker id'
+
+  requestBodies:
+    Locations:
+      content:
+        application/json:
+          schema:
+            properties:
+              x_location:
+                type: number
+                required: true
+                example: 30
+              y_location:
+                type: number
+                required: true
+                example: 150
+    NewUser:
+      content:
+        application/json:
+          schema:
+            properties:
+              name:
+                type: string
+                required: true
+                example: 'myName'
+              email:
+                type: string
+                required: true
+                example: 'example@example.com'
+              password:
+                type: string
+                required: true
+                example: 'secret password'
+              phone:
+                type: string
+                required: true
+                example: '3-333-333-333'
+              status:
+                type: string
+                enum: [Seeker, Volunteer]
+              isBusiness:
+                type: boolean
+  securitySchemes:
+    bearerAuth:
+      type: http
+      scheme: bearer
+      bearerFormat: JWT

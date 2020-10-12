@@ -1,0 +1,6 @@
+{
+  "server": true,
+  "open": false,
+  "files": "docs/api",
+  "startPath": "docs/redoc/index.html"
+}
